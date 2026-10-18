@@ -40,7 +40,7 @@
 | `items.js` | `StartupEvents.registry('item', ...)` 批量注册 `kubejs:*` 龙心/始祖道具，链式 `.rarity().maxStackSize().tooltip()` |
 | `weapons.js` | `ItemEvents.modification` + `item.attackDamage = N`（84 条：79 件主表 + 5 件特例），特例置顶、按 1–6 阶分段 |
 | `items_modification.js` | `ItemEvents.modification` + `item.maxStackSize = 1`（冰火龙铠 32 件） |
-| `items_modification_attribute.js` | `getAttributeModifiers().withModifierAdded(...).modifiers()` → `setAttributeModifiersWithTooltip(...)`（给 DS 龙铠加魔力/回魔、给武器加技能伤害） |
+| `items_modification_attribute.js` | `item.addAttributeModifier(属性, {id, amount, operation}, 槽位)`，表驱动：龙甲魔力/回魔 8 条 + 武器副手技能伤害 21 条 + 弑龙者之刃 2 条（共 31 条，74 行） |
 
 ### 2.2 server（47 个，按层分）
 
@@ -75,31 +75,29 @@
 > 本版**没有**挖掘速度/附魔能力的直接字段，只能经 `setTier(...)` 间接改（`item/ItemModificationKubeEvent.java:95-97`）。
 > `maxDamage > 0` 时 `maxStackSize` 会被忽略（`item/ItemBuilder.java:249-253`，注册期同理）。
 
-### 3.2 属性修饰符（本项目已用对）
+### 3.2 属性修饰符（推荐写法，2026-10-18 已落地）
 
-`withModifierAdded` **不可变，返回新对象，必须写回**。本项目写法是正确的：
-
-```js
-let modifiers = item.item().getDefaultInstance().getAttributeModifiers()
-  .withModifierAdded('dragonsurvival:mana',
-    { operation: 0, amount: 1, id: 'kubejs:light_dragon_helmet_mana' }, 'head')
-  .modifiers()
-item.setAttributeModifiersWithTooltip(modifiers)  // true = 显示 tooltip
-```
-
-更短的等价写法：
+**首选 `item.addAttributeModifier(属性, { id, amount, operation }, 槽位)`**——它内部就把结果写回了（`component/AttributeModifierFunctions.java:50-52`）。
+`Items_modification_attribute.js` 已按此重写，532 行 → 74 行。
 
 ```js
 item.addAttributeModifier('dragonsurvival:mana',
-  { id: 'kubejs:x_mana', amount: 1, operation: 0 }, 'head')  // 内部已写回
-item.setAttackDamage(19.0)        // 清空 attack_damage 后只留 BASE_ATTACK_DAMAGE_ID
-item.setBaseAttackDamage(19.0)    // 只替换 base 那一条，保留其它修饰符
+  { id: 'kubejs:x_mana', amount: 1, operation: 'add_value' }, 'head')
 ```
 
-> `new AttributeModifier(id, amount, 'ADD_VALUE')` 这种枚举字符串写法**未实机验证**；稳妥起见沿用项目现有的对象形式 `{ operation: 0, amount, id }`。
+参数取值（来自实机 `.probe` 的 typings）：
 
-- `setAttributeModifiers(List)` **不显示** tooltip；`setAttributeModifiersWithTooltip(List)` 才显示（`component/AttributeModifierFunctions.java:55-62`）。
-- `Holder<Attribute>` 可直接传字符串（`holder/HolderWrapper.java:54-56`），`'attack_damage'` 会自动补 `minecraft:`。
+| 参数 | 可填 |
+|---|---|
+| `operation` | `'add_value'` / `'add_multiplied_base'` / `'add_multiplied_total'` |
+| `槽位` | `'any'` / `'mainhand'` / `'offhand'` / `'hand'` / `'head'` / `'chest'` / `'legs'` / `'feet'` / `'armor'` / `'body'` |
+| 属性 | 字符串 id，如 `'dragonsurvival:mana'`、`'attack_damage'`（自动补 `minecraft:`） |
+
+**不要用旧写法**（`withModifierAdded` 不可变，必须手动 `.modifiers()` + `setAttributeModifiersWithTooltip()` 写回，8 行才能加一条）。
+
+- 攻击力/攻速还有四个快捷方法：`setAttackDamage` / `setBaseAttackDamage` / `setAttackSpeed` / `setBaseAttackSpeed`（前者清空同类后重写，后者只替换 base 那条）。
+- **`setAttributeModifiers(list)` 是整体替换**，会把武器的攻击力修饰符一起清掉，别用它加属性。
+- `addAttributeModifier` 是**追加**：同一 id 重复添加会产生重复修饰符，id 需在物品内唯一。
 
 ### 3.3 `ServerEvents.recipes`
 

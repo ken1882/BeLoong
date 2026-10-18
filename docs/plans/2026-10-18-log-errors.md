@@ -56,7 +56,7 @@
 
 ### P1-01 星辰龙三个阶段 `crushing_growth` 越界，Dragon Survival 数据包重载抛异常
 
-> **状态：✅ 已修复（2026-10-18），尚未重启验证。** 三个阶段的 `crushing_growth` 已改为与各自 `block_destruction_growth` 一致（150 / 200 / 250），均落在 `growth_range` 内。
+> **状态：✅ 已修复并验证（2026-10-18 22:50 重启）。** 三个阶段的 `crushing_growth` 已改为与各自 `block_destruction_growth` 一致（150 / 200 / 250）；重启后日志中 `Crushing growth` / `incorrectly defined` 均为 0 次。
 >
 > 注：实际物种是**星辰龙**（`star_dragon`，模组名「龙之生存：星辰龙」），不是星界龙（`astral_dragon`），原文档标题有误，已更正。
 
@@ -181,9 +181,16 @@ Couldn't load advancements: [dungeons_arise:find_thornborn_towers, dungeons_aris
 
 **原因：** 两个进度的 `parent` 都指向 `dungeons_arise:find_small_prairie_house`，而 `DungeonsArise-1.21.1-2.1.68` 的 `data/dungeons_arise/advancement/` 里**根本没有这份进度**（只有 `find_giant_mushroom`、`wda_root` 等）。属于该模组版本的打包错误。
 
+排查全库 37 个进度的 `parent` 后确认：**只有这两个**引用了不存在的父节点，其余一级进度全部挂在 `dungeons_arise:wda_root` 下。
+
 **影响：** 这两个探索进度不会出现在进度界面，也不参与 `wda_root` 树的统计。
 
-**建议：** 在 `kubejs/data/dungeons_arise/advancement/` 下覆盖这两个文件，把 `"parent"` 改成 `dungeons_arise:wda_root`（或删除 `parent` 字段使其成为根进度）。
+**状态：✅ 已修复（2026-10-18）。** 在 `kubejs/data/dungeons_arise/advancement/` 下覆盖并重写这两份 JSON：保留原 `display` / `criteria` / `requirements`，仅把 `"parent"` 从 `dungeons_arise:find_small_prairie_house` 改为 **`dungeons_arise:wda_root`**（与其它一级进度一致），未改动任何触发条件。
+
+| 文件 | 改动 |
+|---|---|
+| `kubejs/data/dungeons_arise/advancement/find_thornborn_towers.json` | `parent` → `dungeons_arise:wda_root` |
+| `kubejs/data/dungeons_arise/advancement/find_fishing_hut.json` | `parent` → `dungeons_arise:wda_root` |
 
 ---
 
@@ -293,18 +300,65 @@ gametechbcs_spellbooks:manifestation / abyssal_strike_trigger
 
 ---
 
-### P2-06 Continuity：无缝玻璃资源包 CTM 配置无效（53 行）
+### P2-06 Continuity：无缝玻璃资源包 CTM 配置无效
 
 ```
 No tile or block matches provided in file 'minecraft:optifine/ctm/glass/black/glass_black.properties'
-No valid connection type provided in file '...'
+No valid connection type provided in file 'minecraft:optifine/ctm/glass/black/glass_black.properties'
 ```
 
-**来源：** `config/paxi/resourcepacks/[无缝玻璃] Clear Glass Pack 1.21.zip`，覆盖 16 种颜色（black…yellow），每种报 2 条（`No tile or block matches` / `No valid connection type`），并在多次资源重载中重复出现，合计 53 行。
+**来源：** `config/paxi/resourcepacks/[无缝玻璃] Clear Glass Pack 1.21.zip`。每次资源重载 **32 行（ERROR 级）** = 16 个文件 × 2 条（多次重载会重复出现，首份日志里累计 53 行）。
 
-**影响：** 无缝玻璃连接纹理不生效。
+#### 根因：16 份「没有 match 也没有 connect」的僵尸规则
 
-**建议：** 换用适配 Continuity/1.21.1 的版本，或移除该资源包。
+失败的都是 `optifine/ctm/glass/<color>/glass_<color>.properties`（black / blue / brown / cyan / gray / green / light_blue / lime / magenta / orange / pink / purple / red / silver / white / yellow），内容只有两行：
+
+```properties
+method=ctm
+tiles=0-46
+```
+
+既没有 `matchBlocks`，也没有 `matchTiles`。
+
+#### OptiFine 与 Continuity 的差异（关键）
+
+按 [OptiFine 官方文档](https://optifine.readthedocs.io/ctm.html)：
+
+- `matchBlocks` 的默认值确实是「**由文件名推断**」，但只覆盖一种命名：`~/ctm/xxx/block_<name>.properties` ⇒ `matchBlocks=<name>`；
+- `connect` 的默认值：方块用 `block`，贴图用 `tile` —— **前提是能确定匹配对象**；
+- 两条都推不出来时，OptiFine 只是把这条规则**静默丢弃**，玩家端看不到任何提示。
+
+Continuity 兼容 OptiFine 的 CTM 格式，但它对配置做**显式校验**：匹配对象缺失 → `No tile or block matches`；`connect` 推导不出来 → `No valid connection type`。于是同一份「在 OptiFine 里默默失效」的配置，在 Continuity 里变成每个文件 2 条警告。
+
+`glass_<color>.properties` 既不符合 `block_<name>.properties`，包的 `textures/block/` 里也不存在 `glass_<color>.png`，所以在 OptiFine 下同样是死规则。
+
+#### 为什么可以安全删除
+
+同一目录下的 `<color>_stained_glass.properties` 已经是**同贴图、同目标**的完整规则：
+
+```properties
+matchBlocks=black_stained_glass
+method=ctm
+tiles=0-46
+```
+
+两者 `tiles=0-46` 指向同一个 `glass/<color>/` 目录里的 47 张图，唯一的区别就是前者缺 `matchBlocks`。删除后视觉零变化。
+
+**状态：✅ 已修复（2026-10-18）。** 从 zip 内删除这 16 个僵尸文件（966 → 950 条目），保留 35 条有效 CTM：
+
+| 类别 | 数量 |
+|---|---:|
+| 普通玻璃 / 玻璃板 | 1 + 1 |
+| 染色玻璃 | 16 |
+| 染色玻璃板 | 16 |
+| 遮光玻璃 | 1 |
+| **合计** | **35** |
+
+原始包已备份到 `docs/tools/backup/Clear Glass Pack 1.21.original.zip`。
+
+> 只能改 zip 本身：Continuity 逐 pack 读取 CTM（见 [6.2](#62-失败一continuity-不看合并后的资源管理器)），高优先级资源包里放同名文件不会覆盖它。
+>
+> ⚠️ 事故记录：首次删除时正则 `glass_[a-z_]+\.properties` 把 `glass/aregular/glass_pane.properties`（有效文件）也匹配进去了，造成误删。已从备份原样恢复（145 bytes，内容校验一致），并重新做了全量 diff：备份有而当前无 = 恰好 16 个，当前有而备份无 = 0 个。
 
 ---
 
@@ -571,8 +625,8 @@ Access transformer file META-INF/accesstransformer.cfg provided by mod pride doe
 1. **P1-01**（星辰龙阶段）—— ✅ 已完成：三行 JSON 数值已改为 150/200/250，重启后即可验证。
 2. **P1-02**（`MountingBone`）—— 补骨骼或关掉 `rideable`，消除每次进世界的报错。
 3. **P1-03 / P1-04**（配方 / 战利品）—— 通过 KubeJS 数据包覆盖修复，避免内容缺失。
-4. **P2-01 / P2-02 / P2-05**（进度、麒麟饮食、缺失资源）—— 数据包或资源包即可修复。
-5. **P2-03 / P2-04 / P2-06**（动画、GeckoLib、Continuity）—— 需要模组作者或替换资源包，周期较长。
+4. **P2-01 / P2-02 / P2-05**（进度、麒麟饮食、缺失资源）—— 数据包或资源包即可修复。**P2-01 已完成**（父进度改为 `wda_root`）。
+5. **P2-03 / P2-04 / P2-06**（动画、GeckoLib、Continuity）—— **P2-06 已完成**（删除 16 份僵尸 CTM 规则）；其余需模组作者或替换资源包。
 6. **P2-13**（方块小镇）—— 3 个模型 + 16 个 CTM + 3 个手册页，纯包内改动，可让 Yuushya 归零（见第 4 节）。
 7. 其余 P2/P3 作为噪音清理，并按第 4.5 节建立日志基线，防止新噪音回归。
 
@@ -835,16 +889,70 @@ java.util.NoSuchElementException: No value present
 1. **回滚 Paxi 补丁包**：删除 `config/paxi/resourcepacks/[方块小镇] CTM 修复.zip`，并从 `resourcepack_load_order.json` 移除对应条目。
 2. **接受 CTM 16 条**：它们是模组残留的失效配置（`tiles=1` + `method=fixed`，不产生任何连接效果），且在 Continuity 的实现下，除直接改 jar 外没有包内解法。
 
-**最终预期：**
+**最终实测（2026-10-18 22:50 启动，ProbeJS 已删除）：**
 
-| 项 | 数值 |
-|---|---:|
-| 全包 WARN | 约 **488**（648 − 160 条误伤） |
-| 全包 ERROR | 约 **114** |
-| `yuushya` 相关 | **44 条** = 26 Create + 16 CTM + 2 mixin |
-| 其中已修复 | 22 条（模型 15 + 手册 7） |
+| 项 | 预期 | 实测 |
+|---|---:|---:|
+| 全包 WARN | ~488 | **488** ✅ |
+| 全包 ERROR | ~114 | **112** ✅ |
+| `yuushya` 相关 | 44 | **44**（26 Create + 16 CTM + 2 mixin）✅ |
+| `yuushya` ERROR | 0 | **0** ✅ |
+| 手册 / 模型相关 | 0 | **0** ✅ |
+| P1-01 `Crushing growth` | 0 | **0** ✅ |
+| Paxi `was filtered by pack` | 0 | **0** ✅ |
+| 启动耗时 | — | **85.332 s**（首轮 88.785 s） |
+
+其余 112 条 ERROR 全部是已知项：`PathPackResources` 37（jar 内非法文件名）、`Continuity` 32（无缝玻璃包）、`GeckoLib` 15、`Util` 9（中文/空格文件名）、`RecipeManager` 7（frostfire 6 + justenoughbreeding 1）、`LootDataType` 4、其余 8 条零散。
+
+> ProbeJS 已从 `mods/` 删除：日志中无任何 `probejs` 字样，也无模组因此报缺依赖（`ClassNotFoundException` 仍为 26 条，与删除前一致，全部是 mixin 噪音）。残留的 `config/kubejs/probe-settings.json` 不影响运行，可留可删。
 
 后续若要彻底清掉这 16 条，唯一可靠做法是改模组 jar 内的 `l_.properties`（**不要动 `l.properties`**）；每次方块小镇更新需重做。
+
+---
+
+## 7. 第二轮修复记录（P2-01 / P2-06，2026-10-18 23:00）
+
+### 7.1 P2-01：`dungeons_arise` 两个进度的父节点
+
+| 新增文件 | 改动 |
+|---|---|
+| `kubejs/data/dungeons_arise/advancement/find_thornborn_towers.json` | `parent` → `dungeons_arise:wda_root` |
+| `kubejs/data/dungeons_arise/advancement/find_fishing_hut.json` | 同上 |
+
+**依据：** 扫描该模组全部 37 个进度的 `parent`，只有这两个引用 `dungeons_arise:find_small_prairie_house`（2.1.68 中不存在该文件），其余一级进度（`find_giant_mushroom`、`find_lighthouse` 等 20 个）全部挂在 `wda_root` 下。因此改用 `wda_root` 与模组自身惯例一致。
+
+**影响面：** 只改 `parent`，`display` / `criteria` / `requirements` 原样保留；两个进度重新出现在 `wda_root` 树下，触发条件不变（`minecraft:location` 检测 `thornborn_towers` / `fishing_hut` 结构）。
+
+### 7.2 P2-06：无缝玻璃包 16 份「僵尸 CTM」
+
+| 项 | 内容 |
+|---|---|
+| 删除 | `assets/minecraft/optifine/ctm/glass/<color>/glass_<color>.properties` × 16 |
+| 保留 | 35 条有效规则（普通玻璃 1 + 玻璃板 1 + 染色玻璃 16 + 染色玻璃板 16 + 遮光玻璃 1） |
+| 备份 | `docs/tools/backup/Clear Glass Pack 1.21.original.zip` |
+| 包内条目 | 966 → 950 |
+
+**为什么只能改 zip：** Continuity 的 `CtmPropertiesLoader` 是逐 pack 读取 CTM（见 6.2 节），高优先级资源包里放同名文件不会覆盖它，`pack.mcmeta` 的 `filter` 也拦不住。
+
+**为什么删了不影响外观：** 被删的 16 份规则没有 `matchBlocks`/`matchTiles`，在 OptiFine 下本来就被静默丢弃；同目录的 `<color>_stained_glass.properties` 已经用**同一批** `0-46.png` 覆盖了同一个方块。
+
+### 7.3 预期总账
+
+| 项 | 修复前（22:50 实测） | 修复后（预期） |
+|---|---:|---:|
+| WARN | 488 | **488**（不变） |
+| ERROR | 112 | **79**（−32 CTM −1 进度） |
+| Continuity 相关 | 48（32 ERROR + 16 WARN） | **16 WARN**（只剩 Yuushya 已接受项） |
+
+### 7.4 验证方式
+
+完全重启后：
+
+```powershell
+(Select-String -Path logs\latest.log -Pattern 'ContinuityClient').Count          # 预期 16
+(Select-String -Path logs\latest.log -Pattern "Couldn't load advancements").Count # 预期 0
+(Select-String -Path logs\latest.log -Pattern '/ERROR\]').Count                   # 预期 ~79
+```
 
 ---
 

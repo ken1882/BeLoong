@@ -23,7 +23,7 @@
 | 阶段 | 面板 | attackDamage | 模组 |
 |---|---|---:|---|
 | 0 | 1–9 | 0–8 | 原版，不改 |
-| 1 | 10–19 | 9–18 | 冰火传说 |
+| 1 | 10–20 | 9–19 | 冰火传说 |
 | 2 | 20–29 | 19–28 | 铁魔法（本体） |
 | 3 | 30–39 | 29–38 | 暮色森林 |
 | 4 | 40–59 | 39–58 | 永恒星光 |
@@ -53,23 +53,24 @@
 
 ## 2. 最终数值表
 
-### 阶段 1 · 冰火传说（10–19）· 11 把
+### 阶段 1 · 冰火传说（10–20）· 10 把
 
-锚点：最低 2（海马拍桨）/ 最高 11（幻灵剑）。龙钢三剑（配置驱动）与悚怖三剑（待重做获取）已移入特例表。
+> 本阶段数值已由作者手调，**不再按模组原始比例缩放**，原始面板仅作参考。
+> 铜剑、银剑移入特例表（主世界常见矿物，面板应低于钻石剑）；龙钢三剑（配置驱动）、悚怖三剑（待重做获取）同属特例。
+> `iceandfire:tide_trident` 海潮三叉戟原本不在 `#minecraft:swords` 标签内（按类也不属 `SwordItem`），经作者确认纳入本阶段，并作为段内最高值。
 
-| 物品 ID | 中文名 | 原始 | **新面板** | attackDamage |
-|---|---|---:|---:|---:|
-| `iceandfire:hippocampus_slapper` | 海马拍桨 | 2 | **10** | 9 |
-| `iceandfire:copper_sword` | 铜剑 | 4 | **12** | 11 |
-| `iceandfire:silver_sword` | 银剑 | 5 | **13** | 12 |
-| `iceandfire:amphithere_macuahuitl` | 翼蚺双刃刀 | 5 | **13** | 12 |
-| `iceandfire:stymphalian_bird_dagger` | 铜鹗羽匕 | 6 | **14** | 13 |
-| `iceandfire:hippogryph_sword` | 骏鹰爪剑 | 6.5 | **14.5** | 13.5 |
-| `iceandfire:dragonbone_sword` | 龙骨剑 | 8 | **16** | 15 |
-| `iceandfire:dragonbone_sword_fire` | 龙炎骨血剑 | 9.5 | **17.5** | 16.5 |
-| `iceandfire:dragonbone_sword_ice` | 龙霜骨血剑 | 9.5 | **17.5** | 16.5 |
-| `iceandfire:dragonbone_sword_lightning` | 龙霆骨血剑 | 9.5 | **17.5** | 16.5 |
-| `iceandfire:ghost_sword` | 幻灵剑 | 11 | **19** | 18 |
+| 物品 ID | 中文名 | 原始 | **新面板** | attackDamage | 属性 |
+|---|---|---:|---:|---:|---:|
+| `iceandfire:hippocampus_slapper` | 海马拍桨 | 2 | **10** | 9 | 0.05 |
+| `iceandfire:stymphalian_bird_dagger` | 铜鹗羽匕 | 6 | **11** | 10 | 0.06 |
+| `iceandfire:amphithere_macuahuitl` | 翼蚺双刃刀 | 5 | **13** | 12 | 0.07 |
+| `iceandfire:hippogryph_sword` | 骏鹰爪剑 | 6.5 | **14** | 13 | 0.08 |
+| `iceandfire:dragonbone_sword` | 龙骨剑 | 8 | **16** | 15 | 0.10 |
+| `iceandfire:dragonbone_sword_fire` | 龙炎骨血剑 | 9.5 | **18** | 17 | 0.12 |
+| `iceandfire:dragonbone_sword_ice` | 龙霜骨血剑 | 9.5 | **18** | 17 | 0.12 |
+| `iceandfire:dragonbone_sword_lightning` | 龙霆骨血剑 | 9.5 | **18** | 17 | 0.12 |
+| `iceandfire:ghost_sword` | 幻灵剑 | 11 | **19** | 18 | 0.13 |
+| `iceandfire:tide_trident` | 海潮三叉戟 | 13 | **20** | 19 | 0.15 |
 
 ### 阶段 2 · 铁魔法（20–29）· 11 把
 
@@ -128,7 +129,7 @@
 | `eternal_starlight:golem_steel_greatsword` | 傀儡钢巨剑 | 10 | **57.5** | 56.5 |
 | `eternal_starlight:moonring_greatsword` | 月珥巨剑 | 10.5 | **59** | 58 |
 
-### 阶段 5 · 传奇怪物（60–79）· 11 把
+### 阶段 5 · 传奇怪物（60–79）· 13 把
 
 锚点：6（骑士长铗 / 锚把手）/ 15（超立方体）
 
@@ -141,6 +142,8 @@
 | `legendary_monsters:enderitium_sword` | 终末金属剑 | 7.5 | **63** | 62 | |
 | `legendary_monsters:chorus_blade` | 紫颂之刃 | 8 | **64** | 63 | |
 | `legendary_monsters:dinosaur_bone_club` | 恐龙骨槌 | 9 | **66.5** | 65.5 | 骨槌形 |
+| `legendary_monsters:void_sword` | 虚空之剑 | 10 | **68.5** | 67.5 | 标签外（并集补收） |
+| `legendary_monsters:withered_scythe` | 凋零之镰 | 10 | **68.5** | 67.5 | 非 `SwordItem`（并集补收） |
 | `legendary_monsters:shattered_greatsword` | 碎裂巨剑 | 12 | **72.5** | 71.5 | 巨剑 |
 | `legendary_monsters:soul_great_sword` | 灵魂巨剑 | 13 | **75** | 74 | ⚠ §4.2 |
 | `legendary_monsters:monstrous_anchor` | 怪怖之锚 | 14 | **77** | 76 | 锚形 |
@@ -175,11 +178,38 @@
 
 ---
 
+### 持有属性（逐把填值）
+
+每把武器除伤害外，再挂两条属性修饰符：
+
+| 槽位 | 属性 | 作用 |
+|---|---|---|
+| 主手 | `dragonsurvival:dragon_ability_damage` | 龙技能伤害倍率 |
+| 副手 | `irons_spellbooks:spell_power` | 铁魔法强度 |
+
+两条属性的基础值都是 **1.0**，用 `add_multiplied_base` 施加，故 `0.10 = +10%`、`1.00 = +100%`。
+
+
+**每把武器单独填写数值**（两条属性共用同一个数，范围 `0 < v ≤ 1.00`）。
+
+| 阶段 | 1 | 2 | 3 | 4 | 5 | 6 |
+|---|---:|---:|---:|---:|---:|---:|
+| 当前值 | **0.05 – 0.15（逐把）** | 0.16 | 0.25 | 0.40 | 0.63 | 1.00 |
+| 武器数 | 10 | 11 | 6 | 19 | 13 | 18 |
+
+- **阶段 1 已逐把手调**：0.05 / 0.06 / 0.07 / 0.08 / 0.10 / 0.12 / 0.12 / 0.12 / 0.13 / 0.15（逐把对照见阶段 1 表）。
+- 阶段 2–6 目前仍是阶段内统一值，后续可按同样方式逐把细调。
+- 改某一把武器的属性只需改它自己那行的数字；同阶其他武器不受影响。
+- **玻璃剑**取 `1.00`；其余特例（龙钢三剑、悚怖三剑、小烦维四剑、饥饿之牙）**不挂属性**。
+- 脚本是数值的唯一来源：后续逐把微调后，本文的「最终数值表」只保证**伤害**与脚本一致，属性值以脚本为准。
+
 ## 3. 特例表（单独维护，不参与缩放）
 
 | 武器 | 模组 | 原始面板 | 处理 | 说明 |
 |---|---|---:|---|---|
 | `glass_sword` 玻璃剑 | 暮色 | 40 | **固定 100**（attackDamage 99） | 一次性彩蛋，耐久 1 |
+| `iceandfire:copper_sword` 铜剑 | 冰火 | 4 | **保持原值** | 主世界常见矿物，面板应低于钻石剑 |
+| `iceandfire:silver_sword` 银剑 | 冰火 | 5 | **保持原值** | 同上 |
 | `dread_sword` 悚怖尸奴之剑 | 冰火 | 5 | **保持 5** | 待重做获取方式 |
 | `dread_queen_sword` 悚怖女皇魔剑 | 冰火 | 8 | **保持 8** | 待重做获取方式 |
 | `dread_knight_sword` 悚怖尸骑之剑 | 冰火 | 17 | **保持 17** | 待重做获取方式 |
@@ -237,10 +267,11 @@
 
 | 文件 | 说明 |
 |---|---|
-| `kubejs/startup_scripts/weapons.js` | 84 条 `ItemEvents.modification`：特例 5 条（玻璃剑 + 小烦维四剑）置顶，其后按 1–6 阶分段，段内按面板升序 |
-| `kubejs/startup_scripts/item_attackDamage.js` | **已删除**，原有 23 条数值全部并入上表 |
+| `kubejs/startup_scripts/weapons.js` | **524 行**：`ItemEvents.modification` 一入口同时写伤害与持有属性。特例 5 条置顶，其后 1–6 阶分段，每把武器一个块（伤害 + 一条 `applyWeaponBonus`） |
+| `kubejs/startup_scripts/items_modification_attribute.js` | **39 行**：只保留龙甲 8 条（魔力/回魔）+ 弑龙者之刃 2 条；武器部分已全部移入 `weapons.js` |
+| `kubejs/startup_scripts/item_attackDamage.js` | **已删除**，原有 23 条数值全部并入 `weapons.js` |
 
-脚本与本文表格已逐条比对：**84/84 一致**，无重复 id，`node --check` 通过。
+校验：伤害值 **82/82 与本文表格一致**；`applyWeaponBonus` 调用 **78 次**（77 把阶段武器 + 玻璃剑）；两份脚本均通过 `node --check`。
 
 ### 5.1 源码核对（永恒星光）
 
@@ -264,4 +295,4 @@
 | 传奇怪物 | 2.2.3 | jar 字节码 | 源码 2.1.15 |
 | 灾变 | 3.33 | jar 字节码 + 源码定位 | 源码 3.28 |
 
-统计：并集共 **86 件**武器；其中 **78 件**参与映射（阶段 1–6 分别为 11 / 11 / 6 / 19 / 13 / 18），**8 件**进入特例表（玻璃剑 + 龙钢三剑 + 悚怖三剑 + 饥饿之牙）。
+统计：并集共 **87 件**武器；其中 **77 件**参与映射（阶段 1–6 分别为 10 / 11 / 6 / 19 / 13 / 18），**10 件**进入特例表（玻璃剑 + 龙钢三剑 + 悚怖三剑 + 饥饿之牙 + 铜剑 + 银剑）。

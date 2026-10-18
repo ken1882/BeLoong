@@ -38,9 +38,9 @@
 | 文件 | 手法 |
 |---|---|
 | `items.js` | `StartupEvents.registry('item', ...)` 批量注册 `kubejs:*` 龙心/始祖道具，链式 `.rarity().maxStackSize().tooltip()` |
-| `weapons.js` | `ItemEvents.modification` + `item.attackDamage = N`（84 条：79 件主表 + 5 件特例），特例置顶、按 1–6 阶分段 |
+| `weapons.js` | `ItemEvents.modification` 一次写两件事：`item.attackDamage = N` + `applyWeaponBonus(...)`（主手 `dragon_ability_damage`、副手 `spell_power`）。83 条：特例 5 + 六阶 78，特例置顶、每把武器自带属性数值（两条属性共用） |
 | `items_modification.js` | `ItemEvents.modification` + `item.maxStackSize = 1`（冰火龙铠 32 件） |
-| `items_modification_attribute.js` | `item.addAttributeModifier(属性, {id, amount, operation}, 槽位)`，表驱动：龙甲魔力/回魔 8 条 + 武器副手技能伤害 21 条 + 弑龙者之刃 2 条（共 31 条，74 行） |
+| `items_modification_attribute.js` | `item.addAttributeModifier(...)`，表驱动：龙甲魔力/回魔 8 条 + 弑龙者之刃 2 条（武器部分已并入 `weapons.js`，39 行） |
 
 ### 2.2 server（47 个，按层分）
 
@@ -57,7 +57,7 @@
 ### 2.3 五种主力范式
 
 1. **注册自定义物品**（`startup_scripts/items.js`）：贴图放 `kubejs/assets/kubejs/textures/item`，文本放 `kubejs/assets/kubejs/lang/zh_cn.json`，脚本里一律 `Text.translatable(...)`，不硬编码中文。
-2. **批量改数值**（`items_modification.js` / `weapons.js`）：一个 `ItemEvents.modification` 回调里重复 `event.modify(id, item => ...)`，**没有用循环/表驱动**（32 件龙铠 = 32 段样板；武器 84 段样板）。
+2. **批量改数值**（`items_modification.js` / `weapons.js`）：一个 `ItemEvents.modification` 回调里重复 `event.modify(id, item => ...)`，**没有用循环/表驱动**（32 件龙铠 = 32 段样板；武器 83 段样板，每段 = 伤害 + 两条属性）。
 3. **配方"删旧建新"**：`event.remove({ id: 'ns:path' })` 紧跟 `event.shaped/shapeless(...)`。
 4. **模组合成台透传**：`event.custom({...})` 原样写该模组的 recipe JSON（`input` 用 `{item:...}`、`result` 用 `{id:...}` 这种 1.21 codec 风格，字段名取决于模组自己）。
 5. **事件 → mcfunction 桥**：`ItemEvents.rightClicked` 判 `item.id` → `item.count--` → `server.runCommandSilent('execute as ... run function beloong:xxx')` → 函数里用 `dragon-ability add`、`curios set`、`item modify ... set_components`、宏函数 `$...$(growth)`。
@@ -78,7 +78,7 @@
 ### 3.2 属性修饰符（推荐写法，2026-10-18 已落地）
 
 **首选 `item.addAttributeModifier(属性, { id, amount, operation }, 槽位)`**——它内部就把结果写回了（`component/AttributeModifierFunctions.java:50-52`）。
-`Items_modification_attribute.js` 已按此重写，532 行 → 74 行。
+`items_modification_attribute.js` 已按此重写：532 行 → 74 行，再把武器段并入 `weapons.js` 后为 39 行。
 
 ```js
 item.addAttributeModifier('dragonsurvival:mana',
@@ -163,7 +163,7 @@ item.addAttributeModifier('dragonsurvival:mana',
 | `generate_starter_hut.js` / `generate_longyin_pavilion.js` / `generate_chinese_courtyard.js` | 三份几乎相同，只差物品 id 与传送高度 | 可合并为一个表驱动脚本 |
 | 同上三份 | 脚本只"扣物品 + 提示 + 上移"，**不真正放置建筑**（推测由 yuushya 物品自身在 `use` 时放置） | 待实机确认是否双重消耗 |
 | 同上三份 | 用 `item.id.equals('...')`；`item/*.js` 用 `item.id !== '...'` | `item.id` 是字符串，`!==`/`===` 稳妥；JS 字符串上 `.equals()` 是否可用**未实机验证**（日志无相关报错，但三个脚本未必被触发过），建议统一 `===` |
-| `items_modification_attribute.js:6-31` | 注释写着"示例"，但代码**实际生效**（改的是 `dragonsurvival:dragon_hunter_sword`） | 命名误导，建议改写为正式段或删掉 |
+| ~~`items_modification_attribute.js:6-31`~~ | 原注释写"示例"但代码生效 | **已修复**：2026-10-18 重写时改为正式段「弑龙者之刃」 |
 | `recipe/eternal_starlight/alloy.js` | "所有专属龙心"实际列 8 个，缺 `wing_kirin`（麒麟之心）；切石机同样是 8 个 | 两处一致 → 可能有意（麒麟非龙）；但道具 tooltip 写"龙生九子"，建议向作者确认 |
 | `recipe/dragonsurvival/recipe.js` | 删了 `elder_dragon_heart` 却没重建 | 应为有意（改由龙锻炉产出） |
 

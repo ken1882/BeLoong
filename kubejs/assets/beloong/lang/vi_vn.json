@@ -109,5 +109,7 @@
   "beloong.chatbox.dragon_talk.p2": "Nhiệm vụ của ta đã xong, phải cáo từ rồi",
   "beloong.chatbox.dragon_talk.p3": "§6Vĩnh Lạc Đại Điển§r trong tay ngươi là do phụ thân ngươi biên soạn, còn gọi là§6Sách Nhiệm Vụ§r. Mở sách ra, sẽ dạy ngươi những việc phải làm tiếp theo",
   "beloong.chatbox.dragon_talk.p4": "Ta còn việc khác, đi trước đây",
-  "beloong.chatbox.dragon_talk.opt_wait": "§eĐợi đã, xin đừng đi"
+  "beloong.chatbox.dragon_talk.opt_wait": "§eĐợi đã, xin đừng đi",
+  "beloong.generalfeedback.title": "§e『§6Hóa Long§e』§dGóp ý và Báo lỗi BUG",
+  "beloong.generalfeedback.placeholder": "Vui lòng điền góp ý hoặc BUG, nếu không có thì đóng giao diện này."
 }

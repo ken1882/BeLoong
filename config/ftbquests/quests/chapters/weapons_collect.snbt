@@ -1,0 +1,282 @@
+{
+	default_hide_dependency_lines: false
+	default_quest_shape: "square"
+	filename: "weapons_collect"
+	group: "6B7CC0230CA6913F"
+	id: "25F891C2B0070E6E"
+	images: [ ]
+	order_index: 3
+	quest_links: [ ]
+	quests: [
+		{
+			id: "184AF1455C5D09FA"
+			rewards: [{
+				id: "3A0A8AE3BE11476A"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "0F3393E8AFDEE9BC"
+				item: { count: 1, id: "iceandfire:hippocampus_slapper" }
+				type: "item"
+			}]
+			x: 0.0d
+			y: 1.0d
+		}
+		{
+			id: "5184B3619E21E856"
+			rewards: [{
+				id: "15082DFE65817070"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "520CCB8DCA485EFA"
+				item: { count: 1, id: "iceandfire:amphithere_macuahuitl" }
+				type: "item"
+			}]
+			x: 2.0d
+			y: 1.0d
+		}
+		{
+			id: "699417048A24CA5E"
+			rewards: [{
+				id: "034D370CC7BFBF87"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "56C466392F45CEE1"
+				item: { count: 1, id: "iceandfire:stymphalian_bird_dagger" }
+				type: "item"
+			}]
+			x: 1.0d
+			y: 1.0d
+		}
+		{
+			id: "43B30CE8049F29E5"
+			rewards: [{
+				id: "4076418302E0C5EE"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "7C7A4C257CF70BD9"
+				item: { count: 1, id: "iceandfire:tide_trident" }
+				type: "item"
+			}]
+			x: 9.0d
+			y: 1.0d
+		}
+		{
+			id: "63A928DB11D47FD1"
+			rewards: [{
+				id: "5E399C4F49926879"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "32183D5408BE8A35"
+				item: { count: 1, id: "iceandfire:hippogryph_sword" }
+				type: "item"
+			}]
+			x: 3.0d
+			y: 1.0d
+		}
+		{
+			id: "10EF3108EA476730"
+			rewards: [{
+				id: "79ABC515B11621B6"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "147BAE70085AAE6A"
+				item: { count: 1, id: "iceandfire:dragonbone_sword" }
+				type: "item"
+			}]
+			x: 4.0d
+			y: 1.0d
+		}
+		{
+			id: "10DD374987FFC16D"
+			rewards: [{
+				id: "69F845BF794C0630"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "2231862FD51B3C29"
+				item: { count: 1, id: "iceandfire:dragonbone_sword_fire" }
+				type: "item"
+			}]
+			x: 5.0d
+			y: 1.0d
+		}
+		{
+			id: "06E763145438AB80"
+			rewards: [{
+				id: "646659251E9FDEA5"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "663D5129AB293CEA"
+				item: { count: 1, id: "iceandfire:dragonbone_sword_ice" }
+				type: "item"
+			}]
+			x: 6.0d
+			y: 1.0d
+		}
+		{
+			id: "7832D9AABAE125D8"
+			rewards: [{
+				id: "190E2B97634E842B"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "0DBEE980A24ACA27"
+				item: { count: 1, id: "iceandfire:dragonbone_sword_lightning" }
+				type: "item"
+			}]
+			x: 7.0d
+			y: 1.0d
+		}
+		{
+			id: "5E973355EF6548FE"
+			rewards: [{
+				id: "3D48235A6AE3AFFC"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "2C3BAFE328D5D14C"
+				item: { count: 1, id: "iceandfire:ghost_sword" }
+				type: "item"
+			}]
+			x: 8.0d
+			y: 1.0d
+		}
+		{
+			id: "3881A9176689F1FE"
+			rewards: [{
+				id: "303B2514EDB74587"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "4B94CDF9081269A6"
+				item: { count: 1, id: "minecraft:wooden_sword" }
+				type: "item"
+			}]
+			x: 0.0d
+			y: 0.0d
+		}
+		{
+			id: "2773CD3C0F42BAF1"
+			rewards: [{
+				id: "3E01FBCF80ECD2C0"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "08F6FB2E54D3F82C"
+				item: { count: 1, id: "minecraft:stone_sword" }
+				type: "item"
+			}]
+			x: 1.0d
+			y: 0.0d
+		}
+		{
+			id: "5D81DB88FC175E33"
+			rewards: [{
+				id: "7F818161274A8C72"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "77990A6CE41FFF64"
+				item: { count: 1, id: "minecraft:iron_sword" }
+				type: "item"
+			}]
+			x: 2.0d
+			y: 0.0d
+		}
+		{
+			id: "291D318163B248E2"
+			rewards: [{
+				id: "5066A602043C7E5A"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "5BA0C4529DC56F82"
+				item: { count: 1, id: "minecraft:golden_sword" }
+				type: "item"
+			}]
+			x: 3.0d
+			y: 0.0d
+		}
+		{
+			id: "5ED287D9DB119298"
+			rewards: [{
+				id: "4645D3D8D39C2BEB"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "6920A88CD2F3F23F"
+				item: { count: 1, id: "minecraft:diamond_sword" }
+				type: "item"
+			}]
+			x: 4.0d
+			y: 0.0d
+		}
+		{
+			id: "435879E965A6D24E"
+			rewards: [{
+				id: "62B45A94B422AC01"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "6F13D247F531A38E"
+				item: { count: 1, id: "minecraft:netherite_sword" }
+				type: "item"
+			}]
+			x: 5.0d
+			y: 0.0d
+		}
+		{
+			id: "4F57100AB2A600C9"
+			rewards: [{
+				id: "22F93C21C7A43536"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "5680972896DF4775"
+				item: { count: 1, id: "minecraft:trident" }
+				type: "item"
+			}]
+			x: 6.0d
+			y: 0.0d
+		}
+		{
+			id: "76844F3F1114363E"
+			rewards: [{
+				id: "6386BB6983A66A1F"
+				type: "xp"
+				xp: 100
+			}]
+			tasks: [{
+				id: "4F96018DDD1F60DA"
+				item: { count: 1, id: "minecraft:mace" }
+				type: "item"
+			}]
+			x: 7.0d
+			y: 0.0d
+		}
+	]
+}

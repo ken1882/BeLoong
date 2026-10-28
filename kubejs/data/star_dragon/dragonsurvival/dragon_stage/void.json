@@ -6,7 +6,7 @@
       "tag": "dragonsurvival:large_dragon_destructible"
     },
     "crushing_damage_scalar": 0.05,
-    "crushing_growth": 120.0,
+    "crushing_growth": 200.0,
     "entity_predicate": {}
   },
   "growth_items": [
